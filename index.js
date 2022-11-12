@@ -34,6 +34,11 @@ async function run() {
          
             res.send(services);
         });
+        app.post('/services', async (req, res) => {
+            const services = req.body;
+            const result = await serviceCollection.insertOne(services);
+            res.send(result);
+        });
 
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
@@ -55,27 +60,33 @@ async function run() {
 
 
 
-        // // orders api
-        // app.get('/orders', async (req, res) => {
-        //     let query = {};
 
-        //     if (req.query.email) {
-        //         query = {
-        //             email: req.query.email
-        //         }
-        //     }
+        // review api
+        app.get('/review', async (req, res) => {
+            let query = {};
 
-        //     const cursor = orderCollection.find(query);
-        //     const orders = await cursor.toArray();
-        //     res.send(orders);
-        // });
+            if (req.query.reviwer_email) {
+                query = {
+                    reviwer_email: req.query.reviwer_email
+                }
+            }
 
-        // app.post('/orders', async (req, res) => {
-        //     const order = req.body;
-        //     const result = await orderCollection.insertOne(order);
-        //     res.send(result);
-        // });
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
+        });
 
+        app.get('/review/:id', async (req, res) => {
+          
+
+            const id = req.params.id;
+            const query = { service_id:id };
+            const cursor =  reviewCollection.find(query);
+            const service = await cursor.toArray();
+            res.send(service);
+        });
+
+     
         // app.patch('/orders/:id', async (req, res) => {
         //     const id = req.params.id;
         //     const status = req.body.status
@@ -89,12 +100,12 @@ async function run() {
         //     res.send(result);
         // })
 
-        // app.delete('/orders/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) };
-        //     const result = await orderCollection.deleteOne(query);
-        //     res.send(result);
-        // })
+        app.delete('/review/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result);
+        })
 
 
     }
